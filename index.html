@@ -1,0 +1,317 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>?? Ecommerce Series - Angie</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #0b0b12;
+      color: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+      margin: 0;
+    }
+
+    h1 {
+      color: #ffffff;
+      text-shadow: 0 0 10px #8b5cf6;
+      margin-bottom: 30px;
+    }
+
+    #productos {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .producto {
+      border: 1px solid #29213d;
+      background: #15121f;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px;
+      display: inline-block;
+      width: 220px;
+      vertical-align: top;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .producto:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.35);
+    }
+
+    .producto img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .producto h3 {
+      color: #ffffff;
+      text-transform: capitalize;
+    }
+
+    .producto p {
+      color: #c4b5fd;
+      font-weight: bold;
+    }
+
+    .producto button,
+    .carrito button {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      border: none;
+      color: white;
+      padding: 9px 14px;
+      margin-top: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .producto button:hover,
+    .carrito button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+    }
+
+    .carrito {
+      margin: 40px auto 20px;
+      padding: 20px;
+      background: #15121f;
+      border: 1px solid #29213d;
+      border-radius: 12px;
+      text-align: left;
+      max-width: 600px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .carrito h2 {
+      color: #ffffff;
+      text-shadow: 0 0 8px #8b5cf6;
+    }
+
+    .carrito ul {
+      padding-left: 20px;
+    }
+
+    .carrito li {
+      margin: 8px 0;
+      color: #ddd6fe;
+    }
+
+    .total {
+      font-size: 20px;
+      color: #f9a8d4;
+    }
+
+    .carrito button.vaciar {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      margin-top: 10px;
+    }
+
+    .carrito button.vaciar:hover {
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    }
+
+    .finalizar {
+      background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
+      margin-left: 8px;
+    }
+
+    .finalizar:hover {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>?? Ecommerce SERIES - Angie</h1>
+
+  <div id="productos"></div>
+
+  <div class="carrito">
+    <h2>?? Carrito de Compras (0)</h2>
+
+    <ul id="lista-carrito"></ul>
+
+    <p class="total">
+      <strong>Total: $<span id="total">0.00</span></strong>
+    </p>
+
+    <button class="vaciar" onclick="vaciarCarrito()">
+      ?? Vaciar Carrito
+    </button>
+  </div>
+
+  <script>
+    const productos = [
+      {
+        id: 1,
+        nombre: "Stranger Things",
+        precio: 25.00,
+        imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8_XqeGzDbbByb8pnNe4rUzHmi7H1Qwod4fFmo3AxiOw&s=10"
+      },
+      {
+        id: 2,
+        nombre: "The Walking Dead",
+        precio: 18.00,
+        imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIm1YuTv7p2qiPCDfWXple815cuofw0D5RKd0mIxB5LA&s=10"
+      },
+      {
+        id: 3,
+        nombre: "Juegos de Tronos",
+        precio: 30.00,
+        imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWe67qIonix33mTm4xZlqtr187_pf3XbCd6EFOF9ZTuQ&s=10"
+      },
+      {
+        id: 4,
+        nombre: "Bojack Horseman",
+        precio: 18.00,
+        imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRshmFIUIZDy2YBPTH2uJiBY9KBoRZbnI1R9T7LO1OvA&s=10"
+      },
+      {
+        id: 5,
+        nombre: "You",
+        precio: 22.00,
+        imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYnW4ESmg8AaY0wGvK-Yrg8Nl6m_8845CvswDiyjik3g&s=10"
+      }
+    ];
+
+    const carrito = [];
+
+    const contenedorProductos = document.getElementById("productos");
+    const listaCarrito = document.getElementById("lista-carrito");
+    const totalCarrito = document.getElementById("total");
+
+    function mostrarProductos() {
+      productos.forEach(prod => {
+
+        const div = document.createElement("div");
+
+        div.className = "producto";
+
+        div.innerHTML = `
+          <img src="${prod.imagen}" alt="${prod.nombre}">
+          <h3>${prod.nombre}</h3>
+          <p>Precio: $${prod.precio.toFixed(2)}</p>
+
+          <button onclick="agregarAlCarrito(${prod.id})">
+            ?? Agregar al carrito
+          </button>
+        `;
+
+        contenedorProductos.appendChild(div);
+      });
+    }
+
+    function agregarAlCarrito(id) {
+
+      const productoExistente = carrito.find(p => p.id === id);
+
+      if (productoExistente) {
+
+        productoExistente.cantidad++;
+
+      } else {
+
+        const producto = productos.find(p => p.id === id);
+
+        carrito.push({
+          ...producto,
+          cantidad: 1
+        });
+      }
+
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+
+      listaCarrito.innerHTML = "";
+
+      let total = 0;
+      let totalItems = 0;
+
+      carrito.forEach(item => {
+
+        const li = document.createElement("li");
+
+        li.textContent =
+          `${item.nombre} x${item.cantidad} - $${(
+            item.precio * item.cantidad
+          ).toFixed(2)}`;
+
+        listaCarrito.appendChild(li);
+
+        total += item.precio * item.cantidad;
+
+        totalItems += item.cantidad;
+      });
+
+      totalCarrito.textContent = total.toFixed(2);
+
+      actualizarTituloCarrito(totalItems);
+    }
+
+    function actualizarTituloCarrito(cantidad) {
+
+      const titulo = document.querySelector(".carrito h2");
+
+      titulo.textContent =
+        `?? Carrito de Compras (${cantidad})`;
+    }
+
+    function vaciarCarrito() {
+
+      if (confirm("¿Estás seguro de que quieres vaciar el carrito?")) {
+
+        carrito.length = 0;
+
+        actualizarCarrito();
+      }
+    }
+
+    function finalizarCompra() {
+
+      if (carrito.length === 0) {
+
+        alert(
+          "El carrito está vacío. Agrega productos antes de finalizar la compra."
+        );
+
+        return;
+      }
+
+      alert(
+        "?? ¡Gracias por tu compra! En breve recibirás un correo de confirmación."
+      );
+
+      carrito.length = 0;
+
+      actualizarCarrito();
+    }
+
+    const botonFinalizar = document.createElement("button");
+
+    botonFinalizar.textContent = "? Finalizar Compra";
+
+    botonFinalizar.className = "finalizar";
+
+    botonFinalizar.onclick = finalizarCompra;
+
+    document.querySelector(".carrito").appendChild(botonFinalizar);
+
+    mostrarProductos();
+  </script>
+
+</body>
+</html>
+```
